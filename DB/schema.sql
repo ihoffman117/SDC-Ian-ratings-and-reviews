@@ -1,8 +1,8 @@
-DROP DATABASE if EXISTS reviewsData;
+DROP DATABASE IF EXISTS reviewsdata;
 
-CREATE DATABASE reviewsData;
+CREATE DATABASE reviewsdata;
 
-\c reviewsData;
+\c reviewsata;
 
 DROP TABLE IF EXISTS characteristics, characteristicReviews, reviews, photos;
 
@@ -23,7 +23,7 @@ CREATE TABLE reviews(
   id BIGSERIAL PRIMARY KEY,
   product_id INT NOT NULL,
   rating INT NOT NULL,
-  date TIMESTAMPTZ DEFAULT Now(),
+  date BIGSERIAL,
   summary TEXT NOT NULL,
   body TEXT NOT NULL,
   recommend BOOLEAN DEFAULT false,
