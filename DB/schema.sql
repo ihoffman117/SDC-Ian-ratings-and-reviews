@@ -39,3 +39,9 @@ CREATE TABLE photos(
   review_id INT NOT NULL,
   photo_url VARCHAR(150) NOT NULL
 );
+
+
+
+CREATE INDEX product_id_idx ON reviews (product_id);
+
+CREATE INDEX photos_rev_idx ON photos (review_id);

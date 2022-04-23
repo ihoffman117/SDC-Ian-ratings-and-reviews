@@ -7,8 +7,12 @@ app.use(express.json());
 
 app.get('/api/reviews/', (req, res) => {
   controllers.getReviews(req, res);
-})
+});
+
+app.get('/api/reviews/meta/', (req, res) => {
+  controllers.getReviewsMeta(req, res);
+});
 
 app.listen(port, () => {
   console.log(`server listening on port ${port}`);
-})
+});
