@@ -35,9 +35,10 @@ const postReview = (req, res) => {
     if(err){
       res.status(424).send(err);
     } else {
-      res.status(201).send(posted)
+      res.status(201)
+      res.send(posted)
     }
   })
 }
 
-module.exports = {getReviews, getReviewsMeta}
+module.exports = {getReviews, getReviewsMeta, postReview}

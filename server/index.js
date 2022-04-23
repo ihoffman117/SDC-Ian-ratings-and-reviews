@@ -13,6 +13,10 @@ app.get('/api/reviews/meta/', (req, res) => {
   controllers.getReviewsMeta(req, res);
 });
 
+app.post('/api/reviews', (req, res) => {
+  controllers.postReview(req, res);
+})
+
 app.listen(port, () => {
   console.log(`server listening on port ${port}`);
 });
