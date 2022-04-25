@@ -32,16 +32,14 @@ const getReviews = (product_id, page = 0, count = 5, sort = 'relevant', callback
     helpfulness,
     (SELECT COALESCE(json_agg(row_to_json("photos")),'[]' :: json)
       photos FROM (SELECT id, photo_url FROM photos WHERE photos.review_id = reviews.id) photos)
-    FROM reviews WHERE reviews.product_id = $1
+    FROM reviews WHERE reviews.product_id = $1 AND reviews.reported = false
     ORDER BY ${sortString}
     LIMIT $2
     OFFSET $3
   `;
 
-  db.query(queryString, queryArgs, (err, reviews) => {
-    if (err) {
-      callback(err);
-    } else {
+  db.query(queryString, queryArgs)
+    .then((reviews) => {
       reviewsObj = {
         product: product_id,
         page: page,
@@ -49,8 +47,10 @@ const getReviews = (product_id, page = 0, count = 5, sort = 'relevant', callback
         results: reviews.rows
       }
       callback(null, reviewsObj);
-    }
-  })
+    })
+    .catch((err) => {
+      callback(err);
+    })
 }
 
 const getReviewsMeta = (product_id, callback) => {
@@ -67,15 +67,15 @@ const getReviewsMeta = (product_id, callback) => {
   characteristics FROM (SELECT name, characteristics.id, AVG(value) FROM characteristics LEFT JOIN characteristicReviews ON characteristics.id = characteristicReviews.characteristic_id WHERE characteristics.product_id = $1 GROUP BY characteristics.id) characteristics)
   `
 
-  db.query(queryString, queryArgs, (err, meta) => {
-    if (err) {
-      callback(err);
-    } else {
+  db.query(queryString, queryArgs)
+    .then((meta) => {
       let obj = meta.rows[0];
       obj.product_id = product_id;
       callback(null, obj);
-    }
-  })
+    })
+    .catch((err) => {
+      callback(err);
+    });
 }
 
 const postReview = (object, callback) => {
@@ -91,30 +91,78 @@ const postReview = (object, callback) => {
   const characteristics = object.characteristics
   const date = Date.now();
 
-  const queryArgs = [product_id, rating, summary, body, recommend, name, email, date]
-
-  queryArgs.forEach((arg) => {
-    console.log(typeof arg);
-    console.log(arg);
-  })
+  const queryArgs = [product_id, rating, summary, body, recommend, name, email, date];
 
   const queryString = `
     INSERT INTO reviews (product_id, rating, summary, body, recommend, reviewer_name, reviewer_email, date, response, helpfulness) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'null', 0)
   `;
 
-  /*
+  const queryString2 =`
+    INSERT INTO photos (review_id, photo_url) VALUES ((SELECT id FROM reviews ORDER BY id DESC LIMIT 1), $1)
+  `
 
-  INSERT INTO reviews (product_id, rating, summary, body, recommend, reviewer_name, reviewer_email, date, response) VALUES (24, 2, 'this is a not a body', 'this is a body', false, 'notIan', 'something@gmail.com', 1650753675266, 'null')
+  const queryString3 =`
+    INSERT INTO characteristicReviews (characteristic_id, review_id, value)
+    VALUES ($1, (SELECT id FROM reviews ORDER BY id DESC LIMIT 1), $2)
+  `
 
-  */
+  db.query(queryString, queryArgs)
+    .then((result) => {
+      photos.map((photo) => {
+        const queryArgs2 = [photo];
+        db.query(queryString2, queryArgs2)
+        .catch((err) => {
+          callback(err);
+        })
+      })
 
-  db.query(queryString, queryArgs, (err, result) => {
-    if (err) {
+      for(let key in characteristics) {
+
+        const queryArgs3 =[key, characteristics[key]]
+        db.query(queryString3, queryArgs3)
+        .catch((err) => {
+          callback(err);
+        })
+      }
+      callback(null, null)
+    })
+    .catch((err) => {
       callback(err);
-    } else {
-      callback(null, null);
-    }
-  })
+    })
 }
 
-module.exports = {getReviews , getReviewsMeta, postReview}
+const helpful = (review_id, callback) => {
+
+  const queryArgs = [review_id];
+
+  const queryString = `
+    UPDATE reviews SET helpfulness = helpfulness + 1 WHERE id = $1
+  `;
+
+  db.query(queryString, queryArgs)
+    .then (() => {
+      callback(null);
+    })
+    .catch((err) => {
+      callback(err);
+    })
+}
+
+const report = (review_id, callback) => {
+
+  const queryArgs = [review_id];
+
+  const queryString = `
+    UPDATE reviews SET reported = NOT reported WHERE id = $1
+  `;
+
+  db.query(queryString, queryArgs)
+    .then (() => {
+      callback(null);
+    })
+    .catch((err) => {
+      callback(err);
+    })
+}
+
+module.exports = {getReviews , getReviewsMeta, postReview, helpful, report,}

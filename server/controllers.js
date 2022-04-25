@@ -41,4 +41,26 @@ const postReview = (req, res) => {
   })
 }
 
-module.exports = {getReviews, getReviewsMeta, postReview}
+const helpful = (req, res) => {
+  models.helpful(req.params.review_id, (err) => {
+    if(err){
+      res.status(400).send(err);
+    } else {
+      res.status(204)
+      res.send();
+    }
+  })
+}
+
+const report = (req, res) => {
+  models.report(req.params.review_id, (err) => {
+    if(err){
+      res.status(400).send(err);
+    } else {
+      res.status(204)
+      res.send();
+    }
+  })
+}
+
+module.exports = {getReviews, getReviewsMeta, postReview, helpful, report}
