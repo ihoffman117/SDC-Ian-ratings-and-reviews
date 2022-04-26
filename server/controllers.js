@@ -1,16 +1,14 @@
 const models = require('./models');
 
+
 const getReviews = (req, res) => {
   models.getReviews(req.query.product_id, req.query.page, req.query.count, req.query.sort, (err, reviews) => {
     if (err) {
       res.status(500).send(err);
     } else {
       res.status(200)
-      if (reviews.length <=0 ) {
-        res.send('no reviews here!');
-      } else {
-        res.send(reviews);
-      }
+      res.send(reviews);
+
     }
   });
 }
@@ -21,11 +19,7 @@ const getReviewsMeta = (req, res) => {
       res.status(500).send(err);
     } else {
       res.status(200)
-      if (meta.length <=0 ) {
-        res.send('no meta data');
-      } else {
-        res.send(meta);
-      }
+      res.send(meta);
     }
   });
 }

@@ -18,6 +18,7 @@
   "homepage": "https://github.com/ihoffman117/SDC-Ian-ratings-and-reviews#readme",
   "dependencies": {
     "axios": "^0.26.0",
+    "cors": "^2.8.5",
     "express": "^4.17.3",
     "nodemon": "^2.0.15",
     "pg": "^8.7.3"
