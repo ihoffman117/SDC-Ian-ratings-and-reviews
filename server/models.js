@@ -63,9 +63,24 @@ const getReviewsMeta = (product_id, callback) => {
   (SELECT json_object_agg(recommend, count)
   recommended FROM (SELECT recommend, COUNT(recommend) FROM reviews WHERE product_id = $1 GROUP BY recommend) recommended),
 
-  (SELECT json_object_agg(name, json_build_object('id', id, 'value', avg))
+  (SELECT json_object_agg(name, json_build_object('id', id, 'value', avg)) AS
   characteristics FROM (SELECT name, characteristics.id, AVG(value) FROM characteristics LEFT JOIN characteristicReviews ON characteristics.id = characteristicReviews.characteristic_id WHERE characteristics.product_id = $1 GROUP BY characteristics.id) characteristics)
   `
+
+  /**
+
+
+SELECT
+  (SELECT json_object_agg(rating, count)
+  ratings FROM (SELECT rating, COUNT(rating) FROM reviews WHERE product_id = 24 GROUP BY rating) ratings),
+
+  (SELECT json_object_agg(recommend, count)
+  recommended FROM (SELECT recommend, COUNT(recommend) FROM reviews WHERE product_id = 24 GROUP BY recommend) recommended),
+
+  (SELECT json_object_agg(name, json_build_object('id', id, 'value', avg)) AS
+  characteristics FROM (SELECT name, characteristics.id, AVG(value) FROM characteristics LEFT JOIN characteristicReviews ON characteristics.id = characteristicReviews.characteristic_id WHERE characteristics.product_id = 24 GROUP BY characteristics.id) characteristics)
+
+   */
 
   db.query(queryString, queryArgs)
     .then((meta) => {
