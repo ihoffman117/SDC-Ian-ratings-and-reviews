@@ -72,13 +72,13 @@ const getReviewsMeta = (product_id, callback) => {
 
 SELECT
   (SELECT json_object_agg(rating, count)
-  ratings FROM (SELECT rating, COUNT(rating) FROM reviews WHERE product_id = 24 GROUP BY rating) ratings),
+  ratings FROM (SELECT rating, COUNT(rating) FROM reviews WHERE product_id = 999999 GROUP BY rating) ratings),
 
   (SELECT json_object_agg(recommend, count)
-  recommended FROM (SELECT recommend, COUNT(recommend) FROM reviews WHERE product_id = 24 GROUP BY recommend) recommended),
+  recommended FROM (SELECT recommend, COUNT(recommend) FROM reviews WHERE product_id = 999999 GROUP BY recommend) recommended),
 
   (SELECT json_object_agg(name, json_build_object('id', id, 'value', avg)) AS
-  characteristics FROM (SELECT name, characteristics.id, AVG(value) FROM characteristics LEFT JOIN characteristicReviews ON characteristics.id = characteristicReviews.characteristic_id WHERE characteristics.product_id = 24 GROUP BY characteristics.id) characteristics)
+  characteristics FROM (SELECT name, characteristics.id, AVG(value) FROM characteristics LEFT JOIN characteristicReviews ON characteristics.id = characteristicReviews.characteristic_id WHERE characteristics.product_id = 999999 GROUP BY characteristics.id) characteristics)
 
    */
 

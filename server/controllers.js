@@ -2,6 +2,10 @@ const models = require('./models');
 
 
 const getReviews = (req, res) => {
+  if(!req.query.product_id) {
+    res.status(200)
+      res.send('Error: invalid product_id provides');
+  }
   models.getReviews(req.query.product_id, req.query.page, req.query.count, req.query.sort, (err, reviews) => {
     if (err) {
       res.status(500).send(err);
@@ -14,6 +18,10 @@ const getReviews = (req, res) => {
 }
 
 const getReviewsMeta = (req, res) => {
+  if(!req.query.product_id) {
+    res.status(200)
+      res.send('Error: invalid product_id provides');
+  }
   models.getReviewsMeta(req.query.product_id, (err, meta) => {
     if (err) {
       res.status(500).send(err);

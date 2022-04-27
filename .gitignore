@@ -1,2 +1,4 @@
 node_modules
 config.js
+sdc-backend.pem
+SDC-Server.pem

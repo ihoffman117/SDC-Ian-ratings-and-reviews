@@ -9,16 +9,5 @@ export const options = {
   };
 
 export default function () {
-  let res = http.get('http://localhost:3000/api/reviews/meta/?product_id=24');
-
-  //Creating Error Check
-  let success = check(res, {
-    "status is 200": r => r.status === 200
-  });
-  if (!success) {
-    console.log('error');
-    ErrorCount.add(1)
-  }
-
-  sleep(1);
+  let res = http.get('http://13.57.240.153:3000/api/reviews/meta/?product_id=999999');
 }

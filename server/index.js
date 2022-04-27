@@ -26,6 +26,9 @@ app.put('/api/reviews/:review_id/helpful', controllers.helpful);
 
 app.put('/api/reviews/:review_id/report', controllers.report);
 
+app.get('/loaderio-9f3d653b16edee034c3968c3f7c21850/' (req, res) => {
+  res.send('loaderio-9f3d653b16edee034c3968c3f7c21850')
+})
 
 app.listen(port, () => {
   console.log(`server listening on port ${port}`);
